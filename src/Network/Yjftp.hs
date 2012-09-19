@@ -1,9 +1,7 @@
 module Network.Yjftp (
   runYjftp
--- , module Network.CommandList
 ) where
 
--- import Network.CommandList
 import Network.FTP.Client   (FTPConnection, enableFTPDebugging, easyConnectFTP, login, loginAnon,
                              quit, cwd, uploadbinary, downloadbinary)
 import System.IO            (hFlush, stdin, stdout,
@@ -18,36 +16,20 @@ import Control.OldException    (catch, Exception)
 import Control.Monad        (when, unless)
 import Control.Applicative  ((<$>))
 import Prelude hiding       (catch)
--- import Data.Char            (isSpace, isAscii)
--- import Data.List            (isPrefixOf)
--- import Network.Console(addHist, readConsole, runConsole, CompIO, compPutStr, compHFlush, compPrint, compHPutStrLn, Comp, mkComp, lastWord, compCatch, compCatch2)
--- import Control.Monad.Trans
 
 runYjftp :: IO ()
 runYjftp = do
-  (act, src, srvr, usr, dr, pswd) <- processArgs
-  h <- connectNlogin srvr usr pswd
-  whenMaybe dr $ (>> return ()) . cwd h 
-  case (act, src) of
-    (Just Put, Just s) -> do unless (dirname s == "") $ setCurrentDirectory $ dirname s
-                             uploadbinary h (basename s) >> return ()
-    (Just Get, Just s) -> downloadbinary h s >> return ()
-    _ -> error "bad arguments"
-{-
-    (Nothing, _) -> runConsole (myComp h cl) $ do
-      doWhile_ $ do
-        compHFlush stdout
-        cmdln <- readConsole "> "
-	maybe (return ()) addHist cmdln
-        case myWords <$> cmdln of
-	  Nothing         -> return False
-          Just []         -> return True
-	  Just ["?"]      -> mapM (\cmd -> compPutStr $ fst cmd ++ ":\t" ++ getHelp (snd cmd) ++ "\n") cl >> return True
-          Just (cmd:args) -> flip compCatch2 ((>> return True) . compPrint) $ compCatch (executeCommand cl h cmd args) ((>> return True) . compPrint)
-    _ -> error "bad argument (put/get)"
--}
-  _ <- quit h
-  return ()
+	(act, src, srvr, usr, dr, pswd) <- processArgs
+	h <- connectNlogin srvr usr pswd
+	whenMaybe dr $ (>> return ()) . cwd h 
+	case (act, src) of
+		(Just Put, Just s) -> do
+			unless (dirname s == "") $ setCurrentDirectory $ dirname s
+			uploadbinary h (basename s) >> return ()
+		(Just Get, Just s) -> downloadbinary h s >> return ()
+		_ -> error "bad arguments"
+	_ <- quit h
+	return ()
 
 connectNlogin :: Maybe String -> Maybe String -> Maybe String -> IO FTPConnection
 connectNlogin mAddr mUsr pswd =
@@ -182,32 +164,3 @@ dropOptNArg _ [x] = [x]
 dropOptNArg opt (a:as)
   | opt == a  = tail as
   | otherwise = a : dropOptNArg opt as
-
-{-
-myWords :: String -> [String]
-myWords ""                 = []
-myWords ('!':cs)           = "!" : myWords cs
-myWords str@(c:cs)
-  | isWordHead c           = takeWhile isNotSpaceAscii str : myWords (dropWhile isNotSpaceAscii str)
-  | isSpace c              = myWords cs
-  | otherwise              = error "myWords: maybe your input is not askii"
-  where isNotSpaceAscii c_ = isAscii c_ && not (isSpace c_)
-	isWordHead c_      = isNotSpaceAscii c_ && (c_ /= '!')
-
-myComp :: FTPConnection -> CommandList -> Comp
-myComp h cl = mkComp $ myCompFunc h cl
-
-myCompFunc :: FTPConnection -> CommandList -> String -> IO [String]
-myCompFunc h cl strGen = do
-  let bf  = strGen
-      str = lastWord strGen
---  putStr "\nDEBUG1: "; print bf
-  case bf of
-    ""    -> return $ filter (isPrefixOf str) $ map fst cl
-    _ | and (map (not . isSpace) bf) && head bf /= '!'
-          -> return $ filter (isPrefixOf str) $ map fst cl
-      | otherwise
-          -> case getComp <$> lookup (head $ words bf) cl of
-	          Nothing -> return []
-		  Just f  -> f h str
--}

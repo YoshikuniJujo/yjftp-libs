@@ -1,12 +1,16 @@
-Name:		yjftp-nointeractive
-Version:	0.3.6.6
+Name:		yjftp-libs
+Version:	0.0.1
 License:	GPL
 License-file:	LICENSE
 Author:		Yoshikuni Jujo
 Maintainer:	Yoshikuni Jujo <PAF01143@nifty.ne.jp>
 Category:	Network
 Synopsis:	CUI FTP client like 'ftp', 'ncftp'
-Description:	Just CUI FTP client.
+Description:	It will be library for yjftp.
+		.
+		Executable 'yjftp-ni" is sample. It may be removed.
+		.
+		yjftp-ni is command line FTP client.
 		.
 		If no arguments, then it ask server address, user name and password.
 		.
@@ -16,13 +20,10 @@ Description:	Just CUI FTP client.
 		.
 		And password can give by '-p [passwd]' from command line.
 		.
-		Once login, you can run command 'ls', 'cd', 'cat', 'put', 'get', 'edit', 'show'
-		and so on.
+		You can put or get immediately by doing following.
 		.
-		And you can put or get immediately by doing following.
-		.
-		> yjftp put filepath srvr.address/directorypath [user_name] [-p password]
-		> yjftp get srvr.address/filepath [user_name] [-p password]
+		> yjftp-ni put filepath srvr.address/directorypath [user_name] [-p password]
+		> yjftp-ni get srvr.address/filepath [user_name] [-p password]
 Stability:	experimental
 Homepage:	http://homepage3.nifty.com/salamander/second/projects/yjftp/index.xhtml
 Package-Url:	http://homepage3.nifty.com/salamander/second/portage/distfiles/yjftp-0.3.4.tar.gz
@@ -33,12 +34,13 @@ Extra-Source-Files:
 Extra-Tmp-Files:
 
 Library
+  Hs-source-dirs:	src
   GHC-Options:		-Wall
   Build-Depends:	base >= 4 && < 4.6, unix, directory, process, ftphs, mtl
   Exposed-Modules:	Network.Yjftp
-  Other-Modules:	Network.Types
 
 Executable yjftp-ni
+  Hs-source-dirs:	src
   GHC-Options:		-Wall
   Build-Depends:
   Main-Is:		Main.hs

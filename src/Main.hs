@@ -9,5 +9,5 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [ "--version" ] -> putStrLn $ "yjftp-nointeractive " ++ showVersion version
+    [ "--version" ] -> putStrLn $ "yjftp-ni " ++ showVersion version
     _               -> runYjftp
