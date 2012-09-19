@@ -1,7 +1,7 @@
 module Main where
 
 import System.Environment (getArgs)
-import Paths_yjftp_nointeractive        (version)
+import Paths_yjftp_libs   (version)
 import Data.Version       (showVersion)
 import Network.Yjftp      (runYjftp)
 

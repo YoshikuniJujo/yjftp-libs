@@ -1,6 +1,7 @@
 module Network.Yjftp (
-  runYjftp,
-  yjftp
+	runYjftp,
+	yjftp,
+	CLAction(..)
 ) where
 
 import Network.FTP.Client   (FTPConnection, enableFTPDebugging, easyConnectFTP, login, loginAnon,
@@ -68,13 +69,6 @@ tryNTimes n errM act
   = if (n < 0) then error "tryNTimes: bad! minus times trial?"
                else catch act (\err -> errM err >> tryNTimes (n-1) errM act)
 
-{-
-executeCommand :: CommandList -> FTPConnection -> String -> [String] -> CompIO Bool
-executeCommand cl h cmd args
-  = maybe (compHPutStrLn stderr ("No such command: " ++ cmd) >> return True)
-          (\c -> liftIO $ (getAction c) h args) (lookup cmd cl)
--}
-
 processArgs ::
   IO (Maybe CLAction, Maybe String, Maybe String, Maybe String, Maybe String, Maybe String)
 processArgs = do
@@ -105,13 +99,6 @@ getPassword = do
   hFlush stdout
   psswd <- getLineP
   return psswd
-
-{-
-doWhile_ :: Monad m => m Bool -> m ()
-doWhile_ act = do b <- act
-                  if b then doWhile_ act
-                       else return ()
--}
 
 doWhile :: a -> (a -> IO (a, Bool)) -> IO a
 doWhile i act = do (r,p) <- act i
