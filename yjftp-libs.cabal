@@ -22,8 +22,9 @@ Description:	It will be library for yjftp.
 		.
 		You can put or get immediately by doing following.
 		.
-		> yjftp-ni put filepath srvr.address/directorypath [user_name] [-p password]
-		> yjftp-ni get srvr.address/filepath [user_name] [-p password]
+		yjftp-ni put filepath srvr.address/directorypath [user_name] [-p password]
+		.
+		yjftp-ni get srvr.address/filepath [user_name] [-p password]
 Stability:	experimental
 Homepage:	http://homepage3.nifty.com/salamander/second/projects/yjftp/index.xhtml
 Package-Url:	http://homepage3.nifty.com/salamander/second/portage/distfiles/yjftp-0.3.4.tar.gz
