@@ -1,5 +1,6 @@
 module Network.Yjftp (
-  runYjftp
+  runYjftp,
+  yjftp
 ) where
 
 import Network.FTP.Client   (FTPConnection, enableFTPDebugging, easyConnectFTP, login, loginAnon,
@@ -20,6 +21,11 @@ import Prelude hiding       (catch)
 runYjftp :: IO ()
 runYjftp = do
 	(act, src, srvr, usr, dr, pswd) <- processArgs
+	yjftp act src srvr usr dr pswd
+
+yjftp :: Maybe CLAction -> Maybe FilePath ->
+	Maybe String -> Maybe String -> Maybe String -> Maybe String -> IO ()
+yjftp act src srvr usr dr pswd = do
 	h <- connectNlogin srvr usr pswd
 	whenMaybe dr $ (>> return ()) . cwd h 
 	case (act, src) of
