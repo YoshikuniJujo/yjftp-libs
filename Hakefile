@@ -5,7 +5,7 @@ import Text.RegexPR
 srcs = [ "Network/Yjftp.hs", "yjftp.hs" ]
 
 main = do
-  cbl <- readFile "yjftp.cabal"
+  cbl <- readFile "yjftp-nointeractive.cabal"
   ads <- readFile "address"
   let version = getbrsRegexPR "(?i)version:\\s*(\\S+)\\s*$" cbl !! 1
       address = getbrsRegexPR "(?i)address:\\s*(\\S+)\\s*$" ads !! 1
@@ -16,17 +16,17 @@ main = do
    file [ "yjftp.hs" ] [ "mkyjftp-hs.lhs", "Network/CommandList.hs" ] $
         \_ _ -> [ "runhaskell mkyjftp-hs.lhs" ]
    ,
-   file [ "dist/yjftp-" ++ version ++ ".tar.gz" ] srcs $
+   file [ "dist/yjftp-nointeractive-" ++ version ++ ".tar.gz" ] srcs $
      const2 [ "runhaskell Setup.hs sdist" ]
    ,
-   file [ "portage/net-ftp/yjftp/yjftp-" ++ version ++ ".ebuild" ]
-        [ "portage/net-ftp/yjftp/yjftp.ebuild.gen" ] $
+   file [ "portage/net-ftp/yjftp/yjftp-nointeractive-" ++ version ++ ".ebuild" ]
+        [ "portage/net-ftp/yjftp/yjftp-nointeractive.ebuild.gen" ] $
 	\t [s] -> [ "cp " ++ s ++ " " ++ t ]
    ,
-   file [ "upload" ] [ "dist/yjftp-" ++ version ++ ".tar.gz" ]  $
-        const2 [ "yjftp put dist/yjftp-" ++ version ++ ".tar.gz " ++ address ++ "/ " ++ user ]
+   file [ "upload" ] [ "dist/yjftp-nointeractive-" ++ version ++ ".tar.gz" ]  $
+        const2 [ "yjftp put dist/yjftp-nointeractive-" ++ version ++ ".tar.gz " ++ address ++ "/ " ++ user ]
    ,
-   file [ "manifest" ] [ "portage/net-ftp/yjftp/yjftp-" ++ version ++ ".ebuild" ] $
+   file [ "manifest" ] [ "portage/net-ftp/yjftp/yjftp-nointeractive-" ++ version ++ ".ebuild" ] $
         \_ [s] -> [ "ebuild " ++ s ++ " manifest" ]
    ,
    task "version" [ "echo " ++ version ]

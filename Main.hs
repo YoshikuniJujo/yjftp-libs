@@ -1,16 +1,13 @@
 module Main where
 
 import System.Environment (getArgs)
-import Paths_yjftp        (getDataFileName, version)
+import Paths_yjftp_nointeractive        (version)
 import Data.Version       (showVersion)
-import Network.Yjftp      (runYjftp, defaultCommandList)
-import HsConfigure        (runUsersEx)
+import Network.Yjftp      (runYjftp)
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of
-    [ "--version" ] -> putStrLn $ "yjftp " ++ showVersion version
-    _               -> do
-      src <- getDataFileName "yjftp.hs"
-      runUsersEx "yjftp" (Just version) (Just src) (runYjftp defaultCommandList)
+    [ "--version" ] -> putStrLn $ "yjftp-nointeractive " ++ showVersion version
+    _               -> runYjftp

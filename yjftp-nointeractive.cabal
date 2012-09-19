@@ -1,5 +1,5 @@
-Name:		yjftp
-Version:	0.3.6.5
+Name:		yjftp-nointeractive
+Version:	0.3.6.6
 License:	GPL
 License-file:	LICENSE
 Author:		Yoshikuni Jujo
@@ -29,17 +29,16 @@ Package-Url:	http://homepage3.nifty.com/salamander/second/portage/distfiles/yjft
 Cabal-Version:	>= 1.2
 Build-Type:	Simple
 Tested-With:	GHC
-Data-Files:	yjftp.hs
 Extra-Source-Files:
 Extra-Tmp-Files:
 
 Library
   GHC-Options:		-Wall
-  Build-Depends:	base >= 4 && <= 4.3.1.0, unix, directory, process, ftphs, haskeline, mtl
+  Build-Depends:	base >= 4 && < 4.6, unix, directory, process, ftphs, mtl
   Exposed-Modules:	Network.Yjftp
-  Other-Modules:	Network.CommandList, Network.Console, Network.Types
+  Other-Modules:	Network.Types
 
-Executable yjftp
+Executable yjftp-ni
   GHC-Options:		-Wall
-  Build-Depends:	hsConfigure
+  Build-Depends:
   Main-Is:		Main.hs

@@ -1,12 +1,12 @@
 module Network.Yjftp (
   runYjftp
-, module Network.CommandList
+-- , module Network.CommandList
 ) where
 
-import Network.CommandList
+-- import Network.CommandList
 import Network.FTP.Client   (FTPConnection, enableFTPDebugging, easyConnectFTP, login, loginAnon,
                              quit, cwd, uploadbinary, downloadbinary)
-import System.IO            (hFlush, stdin, stdout, stderr,
+import System.IO            (hFlush, stdin, stdout,
                              hGetBuffering, hSetBuffering, BufferMode(NoBuffering))
 import System.Directory     (setCurrentDirectory)
 import System.Exit          (exitFailure)
@@ -18,13 +18,13 @@ import Control.OldException    (catch, Exception)
 import Control.Monad        (when, unless)
 import Control.Applicative  ((<$>))
 import Prelude hiding       (catch)
-import Data.Char            (isSpace, isAscii)
-import Data.List            (isPrefixOf)
-import Network.Console(addHist, readConsole, runConsole, CompIO, compPutStr, compHFlush, compPrint, compHPutStrLn, Comp, mkComp, lastWord, compCatch, compCatch2)
-import Control.Monad.Trans
+-- import Data.Char            (isSpace, isAscii)
+-- import Data.List            (isPrefixOf)
+-- import Network.Console(addHist, readConsole, runConsole, CompIO, compPutStr, compHFlush, compPrint, compHPutStrLn, Comp, mkComp, lastWord, compCatch, compCatch2)
+-- import Control.Monad.Trans
 
-runYjftp :: CommandList -> IO ()
-runYjftp cl = do
+runYjftp :: IO ()
+runYjftp = do
   (act, src, srvr, usr, dr, pswd) <- processArgs
   h <- connectNlogin srvr usr pswd
   whenMaybe dr $ (>> return ()) . cwd h 
@@ -32,6 +32,8 @@ runYjftp cl = do
     (Just Put, Just s) -> do unless (dirname s == "") $ setCurrentDirectory $ dirname s
                              uploadbinary h (basename s) >> return ()
     (Just Get, Just s) -> downloadbinary h s >> return ()
+    _ -> error "bad arguments"
+{-
     (Nothing, _) -> runConsole (myComp h cl) $ do
       doWhile_ $ do
         compHFlush stdout
@@ -43,19 +45,20 @@ runYjftp cl = do
 	  Just ["?"]      -> mapM (\cmd -> compPutStr $ fst cmd ++ ":\t" ++ getHelp (snd cmd) ++ "\n") cl >> return True
           Just (cmd:args) -> flip compCatch2 ((>> return True) . compPrint) $ compCatch (executeCommand cl h cmd args) ((>> return True) . compPrint)
     _ -> error "bad argument (put/get)"
-  quit h
+-}
+  _ <- quit h
   return ()
 
 connectNlogin :: Maybe String -> Maybe String -> Maybe String -> IO FTPConnection
 connectNlogin mAddr mUsr pswd =
   case (mAddr, mUsr) of
        (Just addr, Just usr) -> do h <- easyConnectFTP addr
-                                   maybe
+                                   _ <- maybe
 				     (getPasswordNLogin h usr)
                                      (flip (login h usr) Nothing . Just) pswd
                                    return h
        (Just addr, Nothing)  -> do h <- easyConnectFTP addr
-                                   loginAnon h
+                                   _ <- loginAnon h
                                    return h
        (Nothing, Nothing)    -> do putStr "FTP SERVER ADDRESS: "
                                    hFlush stdout
@@ -63,7 +66,7 @@ connectNlogin mAddr mUsr pswd =
                                    putStr "USER NAME         : "
                                    hFlush stdout
                                    usr <- getLine
-				   getPasswordNLogin h usr
+				   _ <- getPasswordNLogin h usr
                                    return h
        _                     -> error "bad pattern of address and user"
   where passwdError = "login error: password may not be correct\n"
@@ -77,10 +80,12 @@ tryNTimes n errM act
   = if (n < 0) then error "tryNTimes: bad! minus times trial?"
                else catch act (\err -> errM err >> tryNTimes (n-1) errM act)
 
+{-
 executeCommand :: CommandList -> FTPConnection -> String -> [String] -> CompIO Bool
 executeCommand cl h cmd args
   = maybe (compHPutStrLn stderr ("No such command: " ++ cmd) >> return True)
           (\c -> liftIO $ (getAction c) h args) (lookup cmd cl)
+-}
 
 processArgs ::
   IO (Maybe CLAction, Maybe String, Maybe String, Maybe String, Maybe String, Maybe String)
@@ -113,10 +118,12 @@ getPassword = do
   psswd <- getLineP
   return psswd
 
+{-
 doWhile_ :: Monad m => m Bool -> m ()
 doWhile_ act = do b <- act
                   if b then doWhile_ act
                        else return ()
+-}
 
 doWhile :: a -> (a -> IO (a, Bool)) -> IO a
 doWhile i act = do (r,p) <- act i
@@ -176,6 +183,7 @@ dropOptNArg opt (a:as)
   | opt == a  = tail as
   | otherwise = a : dropOptNArg opt as
 
+{-
 myWords :: String -> [String]
 myWords ""                 = []
 myWords ('!':cs)           = "!" : myWords cs
@@ -202,3 +210,4 @@ myCompFunc h cl strGen = do
           -> case getComp <$> lookup (head $ words bf) cl of
 	          Nothing -> return []
 		  Just f  -> f h str
+-}
