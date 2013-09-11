@@ -1,5 +1,5 @@
 Name:		yjftp-libs
-Version:	0.0.1
+Version:	0.0.2
 License:	GPL
 License-file:	LICENSE
 Author:		Yoshikuni Jujo
@@ -37,7 +37,7 @@ Extra-Tmp-Files:
 Library
   Hs-source-dirs:	src
   GHC-Options:		-Wall
-  Build-Depends:	base >= 4 && < 4.6, unix, directory, process, ftphs, mtl
+  Build-Depends:	base >= 4 && < 4.7, unix, directory, process, ftphs, mtl
   Exposed-Modules:	Network.Yjftp
 
 Executable yjftp-ni

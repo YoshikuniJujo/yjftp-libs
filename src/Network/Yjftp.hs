@@ -14,7 +14,7 @@ import System.Environment   (getArgs)
 import System.Posix.IO      (stdOutput)
 import System.Posix.Terminal(getTerminalAttributes, setTerminalAttributes, withoutMode,
                              TerminalState(Immediately), TerminalMode(EnableEcho))
-import Control.OldException    (catch, Exception)
+import Control.Exception    (catch, SomeException)
 import Control.Monad        (when, unless)
 import Control.Applicative  ((<$>))
 import Prelude hiding       (catch)
@@ -63,7 +63,8 @@ connectNlogin mAddr mUsr pswd =
 	                            psswd <- getPassword
 			            login h usr (Just psswd) Nothing
 
-tryNTimes :: Int -> (Exception -> IO a) -> IO b -> IO b
+-- tryNTimes :: Int -> (Exception -> IO a) -> IO b -> IO b
+tryNTimes :: Int -> (SomeException -> IO a) -> IO b -> IO b
 tryNTimes 0 _ _      = exitFailure
 tryNTimes n errM act
   = if (n < 0) then error "tryNTimes: bad! minus times trial?"
