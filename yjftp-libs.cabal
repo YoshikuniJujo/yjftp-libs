@@ -37,7 +37,7 @@ Extra-Tmp-Files:
 Library
   Hs-source-dirs:	src
   GHC-Options:		-Wall
-  Build-Depends:	base >= 4 && < 4.7, unix, directory, process, ftphs, mtl
+  Build-Depends:	base >= 4 && < 5, unix, directory, process, ftphs, mtl
   Exposed-Modules:	Network.Yjftp
 
 Executable yjftp-ni

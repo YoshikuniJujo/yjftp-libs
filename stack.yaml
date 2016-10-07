@@ -1,0 +1,7 @@
+packages:
+        - .
+
+resolver: lts-7.2
+
+extra-deps:
+        - ftphs-1.0.9.1
